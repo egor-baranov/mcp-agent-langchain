@@ -1,5 +1,4 @@
 import asyncio
-from typing import List
 from mcp_agent.agents.agent import Agent
 from mcp_agent.types import Tool, CallToolResult
 from mcp_agent.workflows.langchain.langchain_gigachat import GigaChatLangChain
