@@ -21,24 +21,59 @@
 <a href="https://github.com/lastmile-ai/mcp-agent/blob/main/LICENSE"><img src="https://img.shields.io/pypi/l/mcp-agent" /></a>
 </p>
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/6f4e40c4-dc88-47b6-b965-5856b69416d2" alt="Logo" width="300" />
+</p>
+
+<p align="center">
+  <em>Build effective agents with Model Context Protocol using simple, composable patterns - now with LangChain integration.</em>
+
+<p align="center">
+  <a href="https://github.com/lastmile-ai/mcp-agent/tree/main/examples" target="_blank"><strong>Examples</strong></a>
+  |
+  <a href="https://www.anthropic.com/research/building-effective-agents" target="_blank"><strong>Building Effective Agents</strong></a>
+  |
+  <a href="https://modelcontextprotocol.io/introduction" target="_blank"><strong>MCP</strong></a>
+  |
+  <a href="https://python.langchain.com" target="_blank"><strong>LangChain</strong></a>
+</p>
+
+<p align="center">
+<a href="https://pypi.org/project/mcp-agent/"><img src="https://img.shields.io/pypi/v/mcp-agent?color=%2334D058&label=pypi" /></a>
+<a href="https://github.com/lastmile-ai/mcp-agent/issues"><img src="https://img.shields.io/github/issues-raw/lastmile-ai/mcp-agent" /></a>
+<a href="https://lmai.link/discord/mcp-agent"><img src="https://shields.io/discord/1089284610329952357" alt="discord" /></a>
+<img alt="Pepy Total Downloads" src="https://img.shields.io/pepy/dt/mcp-agent?label=pypi%20%7C%20downloads"/>
+<a href="https://github.com/lastmile-ai/mcp-agent/blob/main/LICENSE"><img src="https://img.shields.io/pypi/l/mcp-agent" /></a>
+</p>
+
 ## Overview
 
-**`mcp-agent`** is a simple, composable framework to build agents using [Model Context Protocol](https://modelcontextprotocol.io/introduction).
+**`mcp-agent`** is a simple, composable framework to build agents using [Model Context Protocol](https://modelcontextprotocol.io/introduction) with extended support for LangChain integrations.
 
-**Inspiration**: Anthropic announced 2 foundational updates for AI application developers:
+**Key Enhancements**:
+1. **LangChain Integration**: Native support for LangChain models and tools
+2. **Multi-LLM Support**: GigaChat, OpenAI, DeepSeek, Qwen, and more via LangChain
+3. **Maintained Compatibility**: Full backward compatibility with original MCP patterns
 
-1. [Model Context Protocol](https://www.anthropic.com/news/model-context-protocol) - a standardized interface to let any software be accessible to AI assistants via MCP servers.
-2. [Building Effective Agents](https://www.anthropic.com/research/building-effective-agents) - a seminal writeup on simple, composable patterns for building production-ready AI agents.
+**Inspiration**: Extends Anthropic's foundational work with:
+1. [LangChain](https://python.langchain.com) integration for broader model support
+2. Multi-provider agent orchestration
+3. Enhanced tool calling patterns
 
-`mcp-agent` puts these two foundational pieces into an AI application framework:
+```python
+from mcp_agent.workflows.langchain import LangChainAgent
+from mcp_agent.workflows.langchain_gigachat import GigaChatLangChain
 
-1. It handles the pesky business of managing the lifecycle of MCP server connections so you don't have to.
-2. It implements every pattern described in Building Effective Agents, and does so in a _composable_ way, allowing you to chain these patterns together.
-3. **Bonus**: It implements [OpenAI's Swarm](https://github.com/openai/swarm) pattern for multi-agent orchestration, but in a model-agnostic way.
+# Initialize LangChain agent
+agent = LangChainAgent(name="CustomerSupport")
+giga_llm = GigaChatLangChain(
+    agent=agent,
+    credentials="your-gigachat-key",
+    temperature=0.5
+)
 
-Altogether, this is the simplest and easiest way to build robust agent applications. Much like MCP, this project is in early development.
-We welcome all kinds of [contributions](/CONTRIBUTING.md), feedback and your help in growing this to become a new standard.
-
+# Use with existing MCP patterns
+response = await giga_llm.generate([{"role": "user", "content": "Help me change my flight"}])
 ## Get Started
 
 We recommend using [uv](https://docs.astral.sh/uv/) to manage your Python projects:
