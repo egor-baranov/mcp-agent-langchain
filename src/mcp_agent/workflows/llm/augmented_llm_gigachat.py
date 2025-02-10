@@ -1,18 +1,17 @@
 import json
-from typing import Iterable, List, Type
+from typing import List, Type
+
 from gigachat import GigaChat
 from gigachat.models import Chat, Messages, MessagesRole
 from mcp.types import (
     CallToolRequestParams,
     CallToolRequest,
-    CallToolResult,
     EmbeddedResource,
     ImageContent,
     ModelPreferences,
     TextContent,
-    TextResourceContents,
 )
-
+from mcp_agent.logging.logger import get_logger
 from mcp_agent.workflows.llm.augmented_llm import (
     AugmentedLLM,
     ModelT,
@@ -21,7 +20,6 @@ from mcp_agent.workflows.llm.augmented_llm import (
     ProviderToMCPConverter,
     RequestParams,
 )
-from mcp_agent.logging.logger import get_logger
 
 logger = get_logger(__name__)
 
