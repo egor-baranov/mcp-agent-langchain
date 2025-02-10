@@ -1,43 +1,36 @@
 from typing import List, Dict
-from langchain_community.chat_models import GigaChat
-from .langchain import LangChain, LangChainAgent, RequestParams
+from mcp_agent.workflows.swarm.swarm import Swarm
+from mcp_agent.workflows.llm.augmented_llm import RequestParams
+from mcp_agent.workflows.llm.augmented_llm_gigachat import GigaChatAugmentedLLM
 from mcp_agent.logging.logger import get_logger
 
 logger = get_logger(__name__)
 
 
-class GigaChatLangChain(LangChain):
-    """GigaChat implementation for LangChain workflows"""
+class GigaChatLangChain(Swarm, GigaChatAugmentedLLM):
+    """GigaChat implementation of LangChain workflow"""
 
-    def __init__(
-            self,
-            agent: LangChainAgent,
-            credentials: str,
-            context_variables: Dict[str, str] = None,
-            **kwargs
-    ):
-        llm = GigaChat(
-            credentials=credentials,
-            verify_ssl_certs=False,
-            scope="GIGACHAT_API_CORP",
-            **kwargs
+    async def generate(self, message, request_params: RequestParams | None = None):
+        params = self.get_request_params(
+            request_params,
+            default=RequestParams(
+                model="GigaChat-Pro",
+                maxTokens=8192,
+                parallel_tool_calls=True,
+            ),
         )
-        super().__init__(
-            agent=agent,
-            llm=llm,
-            context_variables=context_variables
-        )
+        iterations = 0
+        response = None
+        agent_name = str(self.aggregator.name) if self.aggregator else None
 
-    async def generate(self, messages: List[Dict], params: RequestParams = None) -> str:
-        params = params or RequestParams(
-            temperature=0.5,
-            max_tokens=8192,
-            model="GigaChat-latest"
-        )
-        return await super().generate(messages, params)
+        while iterations < params.max_iterations and self.should_continue():
+            response = await super().generate(
+                message=message if iterations == 0 else "Continue processing request",
+                request_params=params.copy(update={"max_iterations": 1})
+            )
 
-    async def stream(self, messages: List[Dict], params: RequestParams = None):
-        params = params or RequestParams(temperature=0.5)
-        formatted = self._format_messages(messages)
-        async for chunk in self.llm.astream(formatted):
-            yield chunk.content
+            logger.debug(f"GigaChat Agent: {agent_name}, response:", data=response)
+            agent_name = self.aggregator.name if self.aggregator else None
+            iterations += 1
+
+        return response
