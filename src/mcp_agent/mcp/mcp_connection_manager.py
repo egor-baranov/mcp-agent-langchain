@@ -16,7 +16,11 @@ from anyio.abc import TaskGroup
 from anyio.streams.memory import MemoryObjectReceiveStream, MemoryObjectSendStream
 
 from mcp import ClientSession
-from mcp.client.stdio import StdioServerParameters, stdio_client
+from mcp.client.stdio import (
+    StdioServerParameters,
+    stdio_client,
+    get_default_environment,
+)
 from mcp.client.sse import sse_client
 from mcp.types import JSONRPCMessage
 
@@ -212,6 +216,7 @@ class MCPConnectionManager:
                 server_params = StdioServerParameters(
                     command=config.command,
                     args=config.args,
+                    env={**get_default_environment(), **(config.env or {})},
                 )
                 return stdio_client(server_params)
             elif config.transport == "sse":

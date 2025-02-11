@@ -13,7 +13,11 @@ from typing import Callable, Dict, AsyncGenerator
 
 from anyio.streams.memory import MemoryObjectReceiveStream, MemoryObjectSendStream
 from mcp import ClientSession
-from mcp.client.stdio import StdioServerParameters, stdio_client
+from mcp.client.stdio import (
+    StdioServerParameters,
+    stdio_client,
+    get_default_environment,
+)
 from mcp.client.sse import sse_client
 
 from mcp_agent.config import (
@@ -125,7 +129,9 @@ class ServerRegistry:
                 )
 
             server_params = StdioServerParameters(
-                command=config.command, args=config.args
+                command=config.command,
+                args=config.args,
+                env={**get_default_environment(), **(config.env or {})},
             )
 
             async with stdio_client(server_params) as (read_stream, write_stream):

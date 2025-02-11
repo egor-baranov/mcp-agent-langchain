@@ -49,6 +49,9 @@ class MCPServerSettings(BaseModel):
     auth: MCPServerAuthSettings | None = None
     """The authentication configuration for the server."""
 
+    env: Dict[str, str] | None = None
+    """Environment variables to pass to the server process."""
+
 
 class MCPSettings(BaseModel):
     """Configuration for all MCP servers."""
